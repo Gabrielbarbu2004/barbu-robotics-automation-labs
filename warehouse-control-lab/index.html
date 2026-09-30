@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131a">
+  <meta name="description" content="An independent, interactive warehouse control-logic simulation by Barbu Robotics. Explore sequencing, bounded queues, interlocks and fault recovery.">
+  <title>Warehouse Control Lab | Barbu Robotics</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to simulator</a>
+<header class="wrap top"><a class="brand" href="./">BARBU <span>ROBOTICS</span></a><span class="eyebrow">Independent engineering demo · 01</span></header>
+<main class="wrap" id="main">
+  <section class="intro">
+    <p class="eyebrow accent">Control logic / Material handling</p>
+    <h1>Warehouse<br><span>Control Lab.</span></h1>
+    <p class="lead">Run a small material-handling cell. Follow each part from the input queue through a conveyor and robot to dispatch. Then introduce a fault and recover the sequence.</p>
+    <p class="notice">Independent control-logic simulation. No physical robot or PLC is connected. This demo is not safety certified and must not control real equipment.</p>
+  </section>
+
+  <section class="panel operating" aria-labelledby="operating-title">
+    <div class="section-line"><h2 id="operating-title">Operator controls</h2><span class="state" id="state">READY</span></div>
+    <div class="controls">
+      <button class="primary" id="start">Start flow</button>
+      <button id="pause" disabled>Pause</button>
+      <button id="reset">Reset alarms</button>
+      <label class="speed">Playback <select id="speed"><option value="1000">1× · one tick / sec</option><option value="500" selected>2× · two ticks / sec</option><option value="250">4× · four ticks / sec</option></select></label>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite">Ready. Select Start flow to begin.</p>
+    <p class="subtle">Reset preserves parts and counters. Clearing a fault never restarts movement. Playback changes wall-clock speed only.</p>
+  </section>
+
+  <section aria-label="Process metrics" class="metrics">
+    <div><span>Dispatched</span><strong id="dispatched">0</strong><small>completed parts</small></div>
+    <div><span>Throughput</span><strong><span id="throughput">0.0</span><em>/ min</em></strong><small>average per running minute</small></div>
+    <div><span>Queue occupancy</span><strong id="queue-count">0 / 4</strong><small>bounded input buffer</small></div>
+    <div><span>Running time</span><strong id="elapsed">00:00</strong><small>simulated time; stops excluded</small></div>
+  </section>
+
+  <section class="panel" aria-labelledby="process-title">
+    <div class="section-line"><h2 id="process-title">Live process</h2><span class="eyebrow">Queue → Conveyor → Robot → Dispatch</span></div>
+    <div class="process">
+      <article class="station"><p class="step">01 / INPUT</p><h3>Part queue</h3><div id="queue" class="queue" aria-label="Input queue"></div><p id="queue-description">Waiting for incoming parts.</p></article>
+      <article class="station"><p class="step">02 / TRANSPORT</p><h3>Conveyor</h3><strong class="part-id" id="conveyor-part">Empty</strong><progress id="conveyor-progress" max="3" value="0" aria-label="Conveyor cycle progress"></progress><p id="conveyor-description">Ready for a part.</p></article>
+      <article class="station"><p class="step">03 / HANDLING</p><h3>Robot cycle</h3><strong class="part-id" id="robot-part">Empty</strong><progress id="robot-progress" max="5" value="0" aria-label="Robot cycle progress"></progress><p id="robot-description">Ready to pick.</p></article>
+      <article class="station"><p class="step">04 / OUTPUT</p><h3>Dispatch</h3><strong class="part-id" id="dispatch-station">0 parts</strong><p>Completed parts leave the cell. No output capacity constraint is modelled.</p></article>
+    </div>
+    <p class="subtle" id="flow-summary">0 parts created · 0 in process · 0 arrivals held upstream</p>
+  </section>
+
+  <div class="lower-grid">
+    <section class="panel" aria-labelledby="fault-title">
+      <div class="section-line"><h2 id="fault-title">Fault injection</h2><span class="eyebrow">Simulated inputs</span></div>
+      <label class="guard"><input type="checkbox" id="guard" checked> <span>Guard closed<small>Uncheck to open the simulated guard.</small></span></label>
+      <div class="fault-buttons"><button class="danger" id="estop" aria-pressed="false">Engage emergency stop</button><button id="jam" aria-pressed="false">Inject conveyor jam</button></div>
+      <div class="recovery"><h3>Recovery sequence</h3><ol><li>Close the guard, release the emergency stop and clear any jam.</li><li>Select <b>Reset alarms</b> to clear the latched stop.</li><li>Select <b>Start flow</b> to resume from the saved part positions.</li></ol></div>
+    </section>
+    <section class="panel" aria-labelledby="model-title">
+      <h2 id="model-title">What this demonstrates</h2>
+      <p>Deterministic sequencing, backpressure, part tracking, latched interlocks and deliberate restart.</p>
+      <dl><div><dt>Arrival request</dt><dd>Every 2 simulated seconds</dd></div><div><dt>Conveyor transfer</dt><dd>3 seconds · holds if robot busy</dd></div><div><dt>Robot cycle</dt><dd>5 seconds per part</dd></div><div><dt>Queue limit</dt><dd>4 parts · excess requests held</dd></div></dl>
+      <p class="subtle">Idealized cycle times are assumptions, not measured performance. A full queue limits new admissions without discarding existing parts.</p>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="event-title">
+    <div class="section-line"><h2 id="event-title">Event history</h2><button id="export">Export CSV</button></div>
+    <p class="subtle" id="event-count">Latest 1 of 1 events · timestamps use simulated running time</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable event history"><table><caption class="sr-only">Most recent process events first</caption><thead><tr><th scope="col">#</th><th scope="col">Time</th><th scope="col">Event</th><th scope="col">Detail</th></tr></thead><tbody id="events"></tbody></table></div>
+  </section>
+  <footer><p>Barbu Robotics · Independent demonstration project</p><p>No client deployment or commercial result is claimed. Reload the page to start a fresh simulation.</p></footer>
+</main>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

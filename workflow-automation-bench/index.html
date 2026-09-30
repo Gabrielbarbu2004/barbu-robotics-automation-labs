@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Barbu Robotics workflow automation demonstration: validate fictional service requests, apply routing rules, approve exceptions and inspect a replay-safe audit trail.">
+  <title>Workflow Automation Bench | Barbu Robotics</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="./"><span class="brand-mark" aria-hidden="true">BR</span><span>BARBU<span class="brand-light"> ROBOTICS</span></span></a><span class="demo-tag">INDEPENDENT DEMO</span></header>
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div><p class="eyebrow"><span class="signal" aria-hidden="true"></span> OPERATIONS / WORKFLOW AUTOMATION</p><h1 id="page-title">From incoming requests<br>to a clear next action.</h1><p class="intro">A working bench for service request routing. Validate the data, apply explicit rules, review the exceptions, then simulate the handoff.</p></div>
+      <aside class="hero-note"><span class="note-number">01 — 04</span><p>Import → classify → approve → simulate</p><span>No external services. Every decision is inspectable.</span></aside>
+    </section>
+    <div class="notice"><strong>Rule-based demonstration</strong><span>This is an independent portfolio project, not a client deployment or an LLM system. Sample people and requests are fictional. Nothing is sent; data stays in this browser tab.</span></div>
+    <section class="metrics" aria-label="Computed batch metrics">
+      <div><span id="metric-input">0</span><p>Input rows</p></div><div><span id="metric-valid">0</span><p>Valid unique IDs</p></div><div><span id="metric-invalid">0</span><p>Invalid rows</p></div><div><span id="metric-duplicates">0</span><p>Duplicate rows</p></div><div><span id="metric-review">0</span><p>Awaiting review</p></div><div><span id="metric-executions">0</span><p>Session executions</p></div>
+    </section>
+    <div class="work-grid">
+      <section class="panel input-panel" aria-labelledby="import-title">
+        <div class="panel-heading"><span class="step">01</span><div><h2 id="import-title">Bring in the requests</h2><p>CSV with a header row. Quoted commas and multiline fields are supported.</p></div></div>
+        <label for="csv-input">Request data</label><textarea id="csv-input" spellcheck="false" rows="14" aria-describedby="input-help"></textarea>
+        <p id="input-help" class="helper">Required: request_id, customer, email, subject, description.<br>Optional priority: low, normal, high, urgent. Limit: 250 KB. Use fictional data.</p>
+        <div class="button-row"><button class="primary" id="validate">Validate CSV</button><button class="secondary" id="load-sample">Load sample</button><label class="file-button secondary" for="csv-file">Choose CSV<input type="file" id="csv-file" accept=".csv,text/csv"></label></div>
+        <p class="helper">Changing the text does not alter the current batch until you validate it. The execution ledger is retained across imports in this tab.</p>
+        <div id="validation" class="validation" aria-label="Validation issues"></div>
+      </section>
+      <section class="panel controls-panel" aria-labelledby="rules-title">
+        <div class="panel-heading"><span class="step">02</span><div><h2 id="rules-title">Apply transparent rules</h2><p>One clear match is routed. Uncertainty goes to a person.</p></div></div>
+        <dl class="rule-list"><div><dt><span class="dot billing"></span>Billing</dt><dd>Invoice, payment, refund, billing, charge, receipt</dd></div><div><dt><span class="dot support"></span>Support</dt><dd>Login, password, error, bug, broken, access, technical</dd></div><div><dt><span class="dot operations"></span>Operations</dt><dd>Delivery, shipment, shipping, schedule, booking, inventory, dispatch</dd></div><div><dt><span class="dot review"></span>Human review</dt><dd>No match, multiple matches, urgent priority, or a legal, security, fraud, complaint or breach keyword</dd></div></dl>
+        <button class="primary wide" id="classify">Classify current batch</button>
+        <div class="simulate"><div class="panel-heading"><span class="step">04</span><div><h2>Simulate the handoff</h2><p>Only ready requests can run. Review items wait for approval.</p></div></div><button class="secondary wide" id="process">Simulate processing</button><p class="helper">Replay protection records one dispatch per request ID and rule version. Repeat runs are skipped. Reloading the page clears this in-memory ledger.</p></div>
+      </section>
+    </div>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <section class="panel review-panel" aria-labelledby="review-title"><div class="section-heading"><div class="panel-heading"><span class="step">03</span><div><h2 id="review-title">Human approval queue</h2><p>Read the request and choose its destination. Approval is an explicit action.</p></div></div><span id="review-count" class="count">0 pending</span></div><div id="review-queue"></div></section>
+    <section class="panel results-panel" aria-labelledby="results-title"><div class="section-heading"><div><p class="eyebrow">CURRENT BATCH</p><h2 id="results-title">Routing decisions</h2></div><button class="secondary compact" id="export-results">Export results CSV</button></div><div class="table-scroll"><table><caption class="sr-only">Current validated requests and their processing status</caption><thead><tr><th scope="col">Request / subject</th><th scope="col">Route</th><th scope="col">Status</th><th scope="col">Decision</th></tr></thead><tbody id="results-body"></tbody></table></div></section>
+    <section class="panel audit-panel" aria-labelledby="audit-title"><div class="section-heading"><div><p class="eyebrow">SESSION HISTORY</p><h2 id="audit-title">A trail you can follow</h2></div><button class="secondary compact" id="export-audit">Export audit CSV</button></div><p class="helper audit-help">Events and execution IDs are kept in this tab's memory. Exports contain the complete session trail. The table shows the latest 30 events.</p><div class="table-scroll"><table><caption class="sr-only">Latest session audit events, newest first</caption><thead><tr><th scope="col">Time</th><th scope="col">Event / request</th><th scope="col">Detail</th></tr></thead><tbody id="audit-body"></tbody></table></div></section>
+    <footer><strong>BARBU ROBOTICS</strong><p>Small rules. Visible decisions. Human control.</p><a href="README.md">Read the project notes</a></footer>
+  </main>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>

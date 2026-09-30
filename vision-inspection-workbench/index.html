@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#10131a"><title>Vision Inspection Workbench | Barbu Robotics</title><meta name="description" content="An independent synthetic-data prototype exploring machine vision thresholds, geometric inspection and false accepts."><link rel="stylesheet" href="style.css"></head>
+<body>
+  <header class="topbar"><a class="brand" href="#main"><span class="brand-mark" aria-hidden="true">BR</span> BARBU ROBOTICS</a><span class="tag">INDEPENDENT PROTOTYPE</span></header>
+  <main id="main">
+    <section class="intro"><p class="eyebrow">AUTOMATION LAB / 03</p><h1>Vision inspection.<br><span>Make the decision visible.</span></h1><p class="lede">Generate a synthetic component batch, inspect its geometry, and see how lighting and tolerances change the result.</p><p class="disclosure">Synthetic images only. These results describe this generator, not performance on real parts or cameras.</p></section>
+    <div class="workspace">
+      <aside class="panel controls" aria-labelledby="controls-title"><div class="panel-head"><h2 id="controls-title">01 / Set the conditions</h2><button id="reset" class="text-button" type="button">Reset</button></div>
+        <fieldset><legend>Image formation</legend>
+          <label for="exposure">Exposure shift <output id="exposure-value">0</output></label><input id="exposure" type="range" min="-110" max="30" value="0" step="5"><p class="hint">Additive grayscale intensity; normal body ≈ 205.</p>
+          <label for="noise">Pixel noise <output id="noise-value">6</output></label><input id="noise" type="range" min="0" max="70" value="6" step="1">
+        </fieldset>
+        <fieldset><legend>Inspection rules</legend>
+          <label for="threshold">Brightness threshold <output id="threshold-value">120</output></label><input id="threshold" type="range" min="80" max="220" value="120" step="1">
+          <label for="widthTolerance">Body width tolerance <output id="widthTolerance-value">±6 px</output></label><input id="widthTolerance" type="range" min="1" max="24" value="6" step="1">
+          <label for="centreTolerance">Hole centre tolerance <output id="centreTolerance-value">6 px</output></label><input id="centreTolerance" type="range" min="1" max="24" value="6" step="1">
+          <p class="hint">Nominal body: 90 × 64 px. Height: ±6 px. Equivalent hole radius: 7–13 px.</p>
+        </fieldset>
+        <fieldset><legend>Reproducible batches</legend><div class="seed-grid"><label for="calibrationSeed">Calibration seed<input type="number" id="calibrationSeed" value="731" min="0" max="999999" step="1"></label><label for="evaluationSeed">Evaluation seed<input type="number" id="evaluationSeed" value="1907" min="0" max="999999" step="1"></label></div><p class="hint">40 samples per batch: 20 good, 20 defective. Use calibration to tune, then evaluate on the separate seed.</p></fieldset>
+        <div class="actions"><button id="calibrate" type="button" class="secondary">Run calibration</button><button id="evaluate" type="button" class="primary">Run evaluation</button></div>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </aside>
+      <section class="results" aria-labelledby="results-title">
+        <div class="panel"><div class="panel-head"><h2 id="results-title">02 / Inspect the evidence</h2><span id="batch-label" class="tag">CALIBRATION</span></div>
+          <div class="metrics"><div><p id="correct" class="metric-value">—</p><p>Correct decisions</p></div><div><p id="false-accepts" class="metric-value">—</p><p>False accepts</p></div><div><p id="false-rejects" class="metric-value">—</p><p>False rejects</p></div></div>
+          <div class="viewer-header"><h3 id="sample-title">Sample 01</h3><div class="sample-controls"><button id="previous" class="small-button" type="button" aria-label="Previous sample">Previous</button><span id="sample-position">1 / 40</span><button id="next" class="small-button" type="button" aria-label="Next sample">Next</button></div></div>
+          <div class="canvases"><figure><canvas id="source-canvas" width="320" height="240" aria-label="Generated synthetic component with measured body and hole overlays"></canvas><figcaption>GENERATED IMAGE + MEASUREMENTS</figcaption></figure><figure><canvas id="mask-canvas" width="320" height="240" aria-label="Binary threshold mask used by the inspection algorithm"></canvas><figcaption>THRESHOLD MASK</figcaption></figure></div>
+          <div class="decision"><p id="prediction"></p><p id="truth"></p><p id="measurement"></p><p id="reasons"></p></div>
+          <div class="sample-strip" id="sample-strip" aria-label="Select sample"></div>
+        </div>
+        <div class="panel"><div class="panel-head"><h2>03 / Measure the trade-off</h2><button id="export" class="text-button" type="button">Export CSV</button></div><div class="matrix-layout"><table><caption>Confusion matrix · observed batch</caption><thead><tr><th scope="col">Ground truth</th><th scope="col">Accept</th><th scope="col">Reject</th></tr></thead><tbody><tr><th scope="row">Good part</th><td id="good-accepted" class="success">—</td><td id="good-rejected">—</td></tr><tr><th scope="row">Defective part</th><td id="defect-accepted">—</td><td id="defect-rejected" class="success">—</td></tr></tbody></table><div class="explanation"><p><strong>False accept:</strong> a defective part passes inspection.</p><p><strong>False reject:</strong> a good part is rejected.</p><p>Try widening both tolerances to 24 px, or reduce exposure to −110. Observe the errors, then recalibrate.</p></div></div></div>
+      </section>
+    </div>
+    <section class="method panel"><div><p class="eyebrow">UNDER THE HOOD</p><h2>Pixels → regions → measurements → decision.</h2></div><p>A seeded raster generator makes good parts and three defects: missing holes, offset holes and narrow bodies. Inspection uses an intensity threshold, 4-connected regions and geometric limits. Ground-truth labels are used only for scoring, never for the inspection decision.</p><p>Fixed camera view, isolated rectangular parts and simple noise make this a controlled experiment. Real inspection needs representative images, calibration, uncertainty analysis and independent validation. No machine-learning model or industrial integration is included.</p></section>
+  </main><footer><span>Barbu Robotics / Engineering experiments</span><a href="README.md">Read the method &amp; limitations</a></footer><script type="module" src="app.mjs"></script>
+</body></html>
