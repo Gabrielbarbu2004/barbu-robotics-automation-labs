@@ -16,9 +16,9 @@ To run each project's tests with a recent Node.js release, change into that proj
 
 ## Explore the projects
 
-- [Workflow Automation Bench](workflow-automation-bench/) — [live demo](https://gabriel-barbu-robotics.gabibarbu47.chatgpt.site/demos/workflow-automation-bench/)
-- [Warehouse Control Lab](warehouse-control-lab/) — [live demo](https://gabriel-barbu-robotics.gabibarbu47.chatgpt.site/demos/warehouse-control-lab/)
-- [Vision Inspection Workbench](vision-inspection-workbench/) — [live demo](https://gabriel-barbu-robotics.gabibarbu47.chatgpt.site/demos/vision-inspection-workbench/)
+- [Workflow Automation Bench](https://github.com/Gabrielbarbu2004/barbu-robotics-automation-labs/tree/main/workflow-automation-bench) — [live demo](https://gabrielbarbu2004.github.io/demos/workflow-automation-bench/)
+- [Warehouse Control Lab](https://github.com/Gabrielbarbu2004/barbu-robotics-automation-labs/tree/main/warehouse-control-lab) — [live demo](https://gabrielbarbu2004.github.io/demos/warehouse-control-lab/)
+- [Vision Inspection Workbench](https://github.com/Gabrielbarbu2004/barbu-robotics-automation-labs/tree/main/vision-inspection-workbench) — [live demo](https://gabrielbarbu2004.github.io/demos/vision-inspection-workbench/)
 
 Each folder is a standalone project. Only generated example data is included. No authentication credentials or private application documents are needed.
 
